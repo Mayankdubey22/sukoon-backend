@@ -21,6 +21,15 @@ app.get('/', (req, res) => {
 
 app.use('/api/songs', songRoutes);
 
+app.get('/api/health', (req, res) => {
+  res.json({
+    success: true,
+    service: 'sukoon-backend',
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
