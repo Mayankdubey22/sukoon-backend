@@ -6,6 +6,7 @@ require('dotenv').config();
 const songRoutes = require('./routes/songs');
 const lyricsRoutes = require('./routes/lyrics');
 const authRoutes = require('./routes/auth');
+const libraryRoutes = require('./routes/library');
 
 const app = express();
 
@@ -30,6 +31,8 @@ app.use('/api/lyrics', lyricsRoutes);
 
 // Authentication routes
 app.use('/api/auth', authRoutes);
+
+app.use('/api/library', libraryRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

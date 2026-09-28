@@ -33,12 +33,57 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
+    // =====================================================
+    // USER LIBRARY
+    // =====================================================
+
+    likedSongs: {
+      type: [mongoose.Schema.Types.Mixed],
+      default: [],
+    },
+
+    playlists: {
+      type: [
+        {
+          id: {
+            type: String,
+            required: true,
+          },
+
+          name: {
+            type: String,
+            required: true,
+            trim: true,
+          },
+
+          songs: {
+            type: [mongoose.Schema.Types.Mixed],
+            default: [],
+          },
+
+          createdAt: {
+            type: Date,
+            default: Date.now,
+          },
+        },
+      ],
+      default: [],
+    },
+
+    likedPlaylists: {
+      type: [mongoose.Schema.Types.Mixed],
+      default: [],
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model(
+  'User',
+  userSchema
+);
 
 module.exports = User;
