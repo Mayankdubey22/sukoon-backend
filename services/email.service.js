@@ -1,92 +1,218 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const resend = new Resend(
+  process.env.RESEND_API_KEY
+);
 
-const sendOtpEmail = async (email, otp) => {
-  const mailOptions = {
-    from: `"Sukoon" <${process.env.EMAIL_USER}>`,
-    to: email,
-    subject: 'Your Sukoon Email Verification OTP',
-    text: `Your Sukoon verification OTP is ${otp}. It will expire in 10 minutes.`,
-    html: `
-      <div style="
-        margin: 0;
-        padding: 40px 20px;
-        background-color: #05070b;
-        font-family: Arial, sans-serif;
-        color: #ffffff;
-      ">
-        <div style="
-          max-width: 500px;
-          margin: auto;
-          padding: 30px;
-          background-color: #11151d;
-          border-radius: 16px;
-          border: 1px solid #252a33;
-          text-align: center;
-        ">
-          <h1 style="
-            margin-bottom: 10px;
-            color: #ffffff;
-          ">
-            Suk<span style="color: #e5092f;">oon</span>
-          </h1>
+const sendOtpEmail = async (
+  email,
+  otp
+) => {
+  try {
+    const { data, error } =
+      await resend.emails.send({
+        from:
+          'Sukoon <onboarding@resend.dev>',
 
-          <h2 style="
-            color: #ffffff;
-            margin-bottom: 10px;
-          ">
-            Verify your email
-          </h2>
+        to: [email],
 
-          <p style="
-            color: #a1a1aa;
-            font-size: 15px;
-            line-height: 1.6;
-          ">
-            Use the OTP below to verify your Sukoon account.
-          </p>
+        subject:
+          'Your Sukoon Email Verification OTP',
 
-          <div style="
-            margin: 25px 0;
-            padding: 18px;
-            background-color: #05070b;
-            border: 1px solid #e5092f;
-            border-radius: 12px;
-            font-size: 32px;
-            font-weight: bold;
-            letter-spacing: 8px;
-            color: #ff1744;
-          ">
-            ${otp}
+        html: `
+          <div
+            style="
+              margin: 0;
+              padding: 40px 20px;
+              background-color: #08090c;
+              font-family: Arial, Helvetica, sans-serif;
+              color: #ffffff;
+            "
+          >
+            <div
+              style="
+                max-width: 520px;
+                margin: 0 auto;
+                background-color: #111317;
+                border: 1px solid #252832;
+                border-radius: 20px;
+                padding: 36px 28px;
+                text-align: center;
+              "
+            >
+
+              <!-- Logo -->
+
+              <div
+                style="
+                  width: 64px;
+                  height: 64px;
+                  margin: 0 auto 20px;
+                  border-radius: 18px;
+                  background-color: #1c1115;
+                  border: 1px solid #5c1825;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <span
+                  style="
+                    color: #ff1744;
+                    font-size: 28px;
+                    font-weight: bold;
+                  "
+                >
+                  ♪
+                </span>
+              </div>
+
+              <!-- Heading -->
+
+              <h1
+                style="
+                  margin: 0;
+                  color: #ffffff;
+                  font-size: 28px;
+                  line-height: 1.3;
+                "
+              >
+                Welcome to Sukoon
+              </h1>
+
+              <p
+                style="
+                  margin: 12px 0 0;
+                  color: #a1a1aa;
+                  font-size: 15px;
+                  line-height: 1.6;
+                "
+              >
+                Verify your email to continue
+                creating your account.
+              </p>
+
+              <!-- OTP -->
+
+              <div
+                style="
+                  margin: 30px auto;
+                  padding: 20px;
+                  border-radius: 16px;
+                  background-color: #1b1d21;
+                  border: 1px solid #2b2e36;
+                "
+              >
+                <p
+                  style="
+                    margin: 0 0 10px;
+                    color: #777b85;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                  "
+                >
+                  Verification Code
+                </p>
+
+                <div
+                  style="
+                    color: #ff1744;
+                    font-size: 36px;
+                    font-weight: bold;
+                    letter-spacing: 10px;
+                  "
+                >
+                  ${otp}
+                </div>
+              </div>
+
+              <!-- Expiry -->
+
+              <p
+                style="
+                  margin: 0;
+                  color: #a1a1aa;
+                  font-size: 14px;
+                  line-height: 1.6;
+                "
+              >
+                This verification code will
+                expire in
+                <strong
+                  style="color: #ffffff;"
+                >
+                  10 minutes
+                </strong>.
+              </p>
+
+              <p
+                style="
+                  margin: 24px 0 0;
+                  color: #666a73;
+                  font-size: 12px;
+                  line-height: 1.6;
+                "
+              >
+                If you didn't request this
+                verification code, you can
+                safely ignore this email.
+              </p>
+
+              <!-- Footer -->
+
+              <div
+                style="
+                  margin-top: 30px;
+                  padding-top: 20px;
+                  border-top: 1px solid #252832;
+                "
+              >
+                <p
+                  style="
+                    margin: 0;
+                    color: #555861;
+                    font-size: 11px;
+                  "
+                >
+                  © Sukoon — Your personal
+                  music space
+                </p>
+              </div>
+
+            </div>
           </div>
+        `,
+      });
 
-          <p style="
-            color: #a1a1aa;
-            font-size: 14px;
-          ">
-            This OTP will expire in 10 minutes.
-          </p>
+    if (error) {
+      console.error(
+        'Resend email error:',
+        error
+      );
 
-          <p style="
-            margin-top: 25px;
-            color: #666a73;
-            font-size: 12px;
-          ">
-            If you did not create a Sukoon account, you can ignore this email.
-          </p>
-        </div>
-      </div>
-    `,
-  };
+      throw new Error(
+        error.message ||
+          'Failed to send verification email.'
+      );
+    }
 
-  await transporter.sendMail(mailOptions);
+    console.log(
+      `OTP email sent successfully to ${email}`,
+      data?.id
+        ? `(id: ${data.id})`
+        : ''
+    );
+
+    return data;
+  } catch (error) {
+    console.error(
+      'Email service error:',
+      error
+    );
+
+    throw error;
+  }
 };
 
 module.exports = {
